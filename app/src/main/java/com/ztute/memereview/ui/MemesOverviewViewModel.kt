@@ -10,17 +10,22 @@ import com.ztute.memereview.common.getNetworkCallback
 import com.ztute.memereview.common.networkRequest
 import com.ztute.memereview.database.asDomainModel
 import com.ztute.memereview.domain.model.Meme
+import com.ztute.memereview.domain.model.asDatabaseModel
+import com.ztute.memereview.domain.repository.MemeRepository
 import com.ztute.memereview.domain.usecase.GetMemesFromCacheUseCase
 import com.ztute.memereview.domain.usecase.GetMemesFromNetworkUseCase
 import com.ztute.memereview.network.ResultWrapper
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class MemesOverviewViewModel @Inject constructor(
     application: Application,
+    private val memeRepository: MemeRepository,
     private val getMemesFromCacheUseCase: GetMemesFromCacheUseCase,
     private val getMemesFromNetworkUseCase: GetMemesFromNetworkUseCase
 ) : AndroidViewModel(application), InternetStatus {
@@ -47,10 +52,10 @@ class MemesOverviewViewModel @Inject constructor(
             getNetworkCallback(::internetStatusChanged)
         )
         loadMemesFromCache()
-        fetchAndCacheMemes()
     }
 
     private fun fetchAndCacheMemes() {
+        Timber.d("fetchAndCacheMemes invoked")
         getMemesFromNetworkUseCase().onEach { result ->
             when (result) {
                 is ResultWrapper.Loading -> {
@@ -63,6 +68,7 @@ class MemesOverviewViewModel @Inject constructor(
                 }
                 is ResultWrapper.NetworkSuccess -> {
                     _isLoading.emit(false)
+                    memeRepository.cacheData(result.value.asDatabaseModel())
                     _memes.emit(result.value.sortedBy { it.id })
                 }
             }
@@ -89,8 +95,10 @@ class MemesOverviewViewModel @Inject constructor(
     }
 
     override fun internetStatusChanged(hasInternet: Boolean) {
+        Timber.d("internetStatusChanged invoked")
         viewModelScope.launch {
             _hasInternet.emit(hasInternet)
+            delay(500)
             if (hasInternet) {
                 fetchAndCacheMemes()
             }

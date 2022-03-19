@@ -2,10 +2,7 @@ package com.ztute.memereview.repository
 
 import com.ztute.memereview.database.DatabaseMeme
 import com.ztute.memereview.database.MemeDao
-import com.ztute.memereview.network.Data
-import com.ztute.memereview.network.MemeDto
-import com.ztute.memereview.network.MemeNetworkResponse
-import com.ztute.memereview.network.MemeReviewApiService
+import com.ztute.memereview.network.*
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.newSingleThreadContext
