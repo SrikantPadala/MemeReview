@@ -1,4 +1,4 @@
-package com.ztute.memereview.repository
+package com.ztute.memereview.domain.repository
 
 import com.ztute.memereview.database.DatabaseMeme
 import com.ztute.memereview.network.MemeNetworkResponse
