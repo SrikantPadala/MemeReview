@@ -1,9 +1,11 @@
 package com.ztute.memereview.domain.model
 
+import android.os.Parcelable
 import androidx.annotation.Keep
-import com.ztute.memereview.database.DatabaseMeme
+import kotlinx.android.parcel.Parcelize
 
 @Keep
+@Parcelize
 data class Meme(
     val boxCount: Int,
     val height: Int,
@@ -11,17 +13,4 @@ data class Meme(
     val name: String,
     val url: String,
     val width: Int
-)
-
-fun List<Meme>.asDatabaseModel(): List<DatabaseMeme> {
-    return map {
-        DatabaseMeme(
-            id = it.id,
-            boxCount = it.boxCount,
-            height = it.height,
-            name = it.name,
-            url = it.url,
-            width = it.width
-        )
-    }
-}
+) : Parcelable

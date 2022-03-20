@@ -11,8 +11,13 @@ import android.net.NetworkRequest
 import android.os.Build
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
+import androidx.navigation.NavDirections
+import com.ztute.memereview.database.DatabaseMeme
+import com.ztute.memereview.domain.model.Meme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 
 
 fun <T> Fragment.collectStateFlowWithLifecycle(
@@ -82,5 +87,28 @@ fun getNetworkCallback(status: (Boolean) -> Unit): NetworkCallback {
             super.onLost(network)
             status(false)
         }
+    }
+}
+
+
+fun List<Meme>.asDatabaseModel(): List<DatabaseMeme> {
+    return map {
+        DatabaseMeme(
+            id = it.id,
+            boxCount = it.boxCount,
+            height = it.height,
+            name = it.name,
+            url = it.url,
+            width = it.width
+        )
+    }
+}
+
+//https://nezspencer.medium.com/navigation-components-a-fix-for-navigation-action-cannot-be-found-in-the-current-destination-95b63e16152e
+fun NavController.safeNavigate(direction: NavDirections) {
+    Timber.d("Click happened")
+    currentDestination?.getAction(direction.actionId)?.run {
+        Timber.d("Click Propagated")
+        navigate(direction)
     }
 }

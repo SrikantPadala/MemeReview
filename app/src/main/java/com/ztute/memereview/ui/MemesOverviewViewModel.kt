@@ -7,11 +7,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.ztute.memereview.DispatcherProvider
 import com.ztute.memereview.common.InternetStatus
+import com.ztute.memereview.common.asDatabaseModel
 import com.ztute.memereview.common.getNetworkCallback
 import com.ztute.memereview.common.networkRequest
 import com.ztute.memereview.database.asDomainModel
 import com.ztute.memereview.domain.model.Meme
-import com.ztute.memereview.domain.model.asDatabaseModel
 import com.ztute.memereview.domain.repository.MemeRepository
 import com.ztute.memereview.domain.usecase.GetMemesFromCacheUseCase
 import com.ztute.memereview.domain.usecase.GetMemesFromNetworkUseCase
@@ -38,6 +38,9 @@ class MemesOverviewViewModel @Inject constructor(
 
     private val _hasInternet = MutableSharedFlow<Boolean>()
     val hasInternet = _hasInternet.asSharedFlow()
+
+    private val _navigateToSelectedMeme = MutableSharedFlow<Meme>()
+    val navigateToSelectedMeme = _navigateToSelectedMeme.asSharedFlow()
 
     private val _errorMessage = MutableSharedFlow<String>()
     val errorMessage = _errorMessage.asSharedFlow()
@@ -94,7 +97,9 @@ class MemesOverviewViewModel @Inject constructor(
     }
 
     fun displayMemeDetail(meme: Meme) {
-
+        viewModelScope.launch(dispatchers.main) {
+            _navigateToSelectedMeme.emit(meme)
+        }
     }
 
     override fun internetStatusChanged(hasInternet: Boolean) {
