@@ -42,7 +42,6 @@ class MemesAdapter(private val onClickListener: OnClickListener) :
         }
     }
 
-    //create a named lambda
     class OnClickListener(val clickListener: (meme: Meme) -> Unit) {
         fun onClick(meme: Meme) {
             clickListener(meme)

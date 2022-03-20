@@ -5,17 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.google.android.material.snackbar.Snackbar
-import com.ztute.memereview.R
 import com.ztute.memereview.adapters.MemesAdapter
+import com.ztute.memereview.common.safeNavigate
 import com.ztute.memereview.databinding.MemesOverviewFragmentBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -33,11 +33,7 @@ class MemesOverviewFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        binding = DataBindingUtil.inflate(
-            inflater, R.layout.memes_overview_fragment,
-            container,
-            false
-        )
+        binding = MemesOverviewFragmentBinding.inflate(inflater)
 
         binding.lifecycleOwner = viewLifecycleOwner
 
@@ -90,6 +86,16 @@ class MemesOverviewFragment : Fragment() {
         lifecycleScope.launchWhenStarted {
             viewModel.errorMessage.collect {
                 Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.navigateToSelectedMeme.collect {
+                findNavController().safeNavigate(
+                    MemesOverviewFragmentDirections.actionMemesOverviewFragmentToMemeDetailFragment(
+                        it
+                    )
+                )
             }
         }
     }

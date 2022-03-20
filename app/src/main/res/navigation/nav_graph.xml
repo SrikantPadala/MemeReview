@@ -1,11 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/memesOverviewFragment">
 
     <fragment
         android:id="@+id/memesOverviewFragment"
         android:name="com.ztute.memereview.ui.MemesOverviewFragment"
-        android:label="MemesOverviewFragment" />
+        android:label="MemesOverviewFragment"
+        tools:layout="@layout/memes_overview_fragment">
+        <action
+            android:id="@+id/action_memesOverviewFragment_to_memeDetailFragment"
+            app:destination="@id/memeDetailFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/memeDetailFragment"
+        android:name="com.ztute.memereview.ui.MemeDetailFragment"
+        android:label="MemeDetailFragment"
+        tools:layout="@layout/meme_detail_fragment">
+        <action
+            android:id="@+id/action_memeDetailFragment_to_memesOverviewFragment"
+            app:destination="@id/memesOverviewFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/memesOverviewFragment"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="meme"
+            app:argType="com.ztute.memereview.domain.model.Meme" />
+    </fragment>
 </navigation>

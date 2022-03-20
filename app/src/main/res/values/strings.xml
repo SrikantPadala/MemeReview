@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">Meme Review</string>
     <string name="no_internet">No Internet</string>
+    <string name="box_count">Box Count:</string>
+    <string name="name">Name:</string>
 </resources>
