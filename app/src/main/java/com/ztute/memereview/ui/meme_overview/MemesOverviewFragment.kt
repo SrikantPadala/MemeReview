@@ -1,4 +1,4 @@
-package com.ztute.memereview.ui
+package com.ztute.memereview.ui.meme_overview
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -67,7 +67,7 @@ class MemesOverviewFragment : Fragment() {
                     Snackbar.make(
                         requireContext(),
                         binding.root,
-                        "No Internet",
+                        "No Internet, Showing offline data. Turn on mobile data/wifi to fetch latest data",
                         Snackbar.LENGTH_SHORT
                     ).show()
                 }

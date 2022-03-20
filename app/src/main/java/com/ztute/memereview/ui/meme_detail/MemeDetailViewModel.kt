@@ -1,4 +1,4 @@
-package com.ztute.memereview.ui
+package com.ztute.memereview.ui.meme_detail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

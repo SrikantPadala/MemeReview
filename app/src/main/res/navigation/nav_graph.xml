@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/memesOverviewFragment"
-        android:name="com.ztute.memereview.ui.MemesOverviewFragment"
+        android:name="com.ztute.memereview.ui.meme_overview.MemesOverviewFragment"
         android:label="MemesOverviewFragment"
         tools:layout="@layout/memes_overview_fragment">
         <action
@@ -20,7 +20,7 @@
     </fragment>
     <fragment
         android:id="@+id/memeDetailFragment"
-        android:name="com.ztute.memereview.ui.MemeDetailFragment"
+        android:name="com.ztute.memereview.ui.meme_detail.MemeDetailFragment"
         android:label="MemeDetailFragment"
         tools:layout="@layout/meme_detail_fragment">
         <action

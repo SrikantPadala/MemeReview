@@ -10,7 +10,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:context=".ui.MemeDetailFragment">
+            tools:context=".ui.meme_detail.MemeDetailFragment">
 
             <ImageView
                 android:id="@+id/imageView"
@@ -80,6 +80,6 @@
 
         <variable
             name="viewModel"
-            type="com.ztute.memereview.ui.MemeDetailViewModel" />
+            type="com.ztute.memereview.ui.meme_detail.MemeDetailViewModel" />
     </data>
 </layout>
