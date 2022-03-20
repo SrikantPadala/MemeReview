@@ -9,16 +9,6 @@
         android:clipToPadding="true"
         tools:context="com.ztute.memereview.ui.MainActivity">
 
-        <ProgressBar
-            android:id="@+id/progress_circular"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:progressDrawable="@drawable/loading_animation"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/memes_grid"
             android:layout_width="match_parent"
@@ -30,12 +20,23 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:itemCount="100"
             tools:listitem="@layout/meme_item" />
+
+        <ProgressBar
+            android:id="@+id/progress_circular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:progressDrawable="@drawable/loading_animation"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <data>
 
         <variable
             name="viewModel"
-            type="com.ztute.memereview.ui.MemesOverviewViewModel" />
+            type="com.ztute.memereview.ui.meme_overview.MemesOverviewViewModel" />
     </data>
 </layout>

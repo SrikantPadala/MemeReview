@@ -1,4 +1,4 @@
-package com.ztute.memereview.ui
+package com.ztute.memereview.ui.meme_overview
 
 import android.app.Application
 import android.content.Context
