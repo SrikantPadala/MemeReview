@@ -1,12 +1,12 @@
 package com.ztute.memereview.domain.usecase
 
+import com.ztute.memereview.DispatcherProvider
 import com.ztute.memereview.common.SERVER_TIMEOUT
 import com.ztute.memereview.database.asDomainModel
 import com.ztute.memereview.domain.model.Meme
 import com.ztute.memereview.domain.repository.MemeRepository
 import com.ztute.memereview.network.ResultWrapper
 import com.ztute.memereview.network.asDabataseModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -15,7 +15,10 @@ import kotlinx.coroutines.withTimeout
 import timber.log.Timber
 import javax.inject.Inject
 
-class GetMemesFromNetworkUseCase @Inject constructor(val repository: MemeRepository) {
+class GetMemesFromNetworkUseCase @Inject constructor(
+    val repository: MemeRepository,
+    val dispatchers: DispatcherProvider
+) {
     operator fun invoke(): Flow<ResultWrapper<List<Meme>>> = flow {
         Timber.d("GetMemesFromNetworkUseCase invoked")
         emit(ResultWrapper.Loading)
@@ -51,6 +54,5 @@ class GetMemesFromNetworkUseCase @Inject constructor(val repository: MemeReposit
                 )
             )
         }
-    }
-        .flowOn(Dispatchers.IO)
+    }.flowOn(dispatchers.io)
 }

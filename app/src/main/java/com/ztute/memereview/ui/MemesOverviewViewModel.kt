@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.ztute.memereview.DispatcherProvider
 import com.ztute.memereview.common.InternetStatus
 import com.ztute.memereview.common.getNetworkCallback
 import com.ztute.memereview.common.networkRequest
@@ -19,6 +20,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -27,7 +29,8 @@ class MemesOverviewViewModel @Inject constructor(
     application: Application,
     private val memeRepository: MemeRepository,
     private val getMemesFromCacheUseCase: GetMemesFromCacheUseCase,
-    private val getMemesFromNetworkUseCase: GetMemesFromNetworkUseCase
+    private val getMemesFromNetworkUseCase: GetMemesFromNetworkUseCase,
+    private val dispatchers: DispatcherProvider
 ) : AndroidViewModel(application), InternetStatus {
 
     private val _isLoading = MutableSharedFlow<Boolean>()
@@ -44,17 +47,17 @@ class MemesOverviewViewModel @Inject constructor(
     val memes: StateFlow<List<Meme>> = _memes.asStateFlow()
 
     private val connectivityManager =
-        application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
 
     init {
-        connectivityManager.requestNetwork(
+        connectivityManager?.requestNetwork(
             networkRequest,
             getNetworkCallback(::internetStatusChanged)
         )
         loadMemesFromCache()
     }
 
-    private fun fetchAndCacheMemes() {
+    fun fetchAndCacheMemes() {
         Timber.d("fetchAndCacheMemes invoked")
         getMemesFromNetworkUseCase().onEach { result ->
             when (result) {
@@ -73,10 +76,10 @@ class MemesOverviewViewModel @Inject constructor(
                 }
             }
         }
-            .launchIn(viewModelScope)
+            .launchIn(viewModelScope + dispatchers.main)
     }
 
-    private fun loadMemesFromCache() {
+    fun loadMemesFromCache() {
         getMemesFromCacheUseCase().onEach { result ->
             when (result) {
                 is ResultWrapper.Loading -> Unit
@@ -87,7 +90,7 @@ class MemesOverviewViewModel @Inject constructor(
                     _memes.emit(result.value.asDomainModel().sortedBy { it.id })
                 }
             }
-        }.launchIn(viewModelScope)
+        }.launchIn(viewModelScope + dispatchers.main)
     }
 
     fun displayMemeDetail(meme: Meme) {
@@ -96,7 +99,7 @@ class MemesOverviewViewModel @Inject constructor(
 
     override fun internetStatusChanged(hasInternet: Boolean) {
         Timber.d("internetStatusChanged invoked")
-        viewModelScope.launch {
+        viewModelScope.launch(dispatchers.main) {
             _hasInternet.emit(hasInternet)
             delay(500)
             if (hasInternet) {

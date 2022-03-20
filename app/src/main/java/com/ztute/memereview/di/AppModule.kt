@@ -6,6 +6,8 @@ import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import com.ztute.memereview.DefaultDispatchers
+import com.ztute.memereview.DispatcherProvider
 import com.ztute.memereview.common.BASE_URL
 import com.ztute.memereview.common.DATABASE_NAME
 import com.ztute.memereview.database.MemeDao
@@ -96,5 +98,11 @@ object AppModule {
         val gsonBuilder = GsonBuilder()
         gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
         return gsonBuilder.create()
+    }
+
+    @Singleton
+    @Provides
+    fun provideDispatchers(): DispatcherProvider {
+        return DefaultDispatchers()
     }
 }
