@@ -1,28 +1,26 @@
-package com.ztute.memereview.repository
+package com.ztute.memereview.network
 
 import com.ztute.memereview.database.DatabaseMeme
 import com.ztute.memereview.database.MemeDao
-import com.ztute.memereview.network.*
-import junit.framework.TestCase
+import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito.doReturn
-import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.spy
-import org.mockito.kotlin.verifyNoInteractions
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.*
 import retrofit2.Response
 
+@ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
-class DefaultMemeRepositoryTest : TestCase() {
+class DefaultMemeRepositoryTest {
 
     lateinit var defaultMemeRepository: DefaultMemeRepository
 
@@ -35,46 +33,48 @@ class DefaultMemeRepositoryTest : TestCase() {
     private val mainThreadSurrogate = newSingleThreadContext("UI thread")
 
     @Before
-    public override fun setUp() {
-        super.setUp()
+    fun setUp() {
         Dispatchers.setMain(mainThreadSurrogate)
         defaultMemeRepository =
             spy(DefaultMemeRepository(memeDao, memeReviewApiService))
     }
 
     @After
-    public override fun tearDown() {
-        super.tearDown()
+    fun tearDown() {
         Dispatchers.resetMain() // reset the main dispatcher to the original Main dispatcher
         mainThreadSurrogate.close()
     }
 
     @Test
-    fun refreshMemes() {
-        kotlinx.coroutines.test.runTest {
-            val networkMeme = MemeDto(2, 200, "id", "abc", "url", 200)
-            val databaseMeme = DatabaseMeme("id", 2, 200, "abc", "url", 200)
-            val memeNetworkResponse = MemeNetworkResponse(
-                Data(
-                    listOf(
-                        networkMeme
-                    )
-                ), true
-            )
-            val response = Response.success(memeNetworkResponse)
-            doReturn(response).whenever(memeReviewApiService).getMemes()
+    fun `refresh Memes from network returns successful result`() = runTest {
+        val networkMeme = MemeDto(2, 200, "id", "abc", "url", 200)
+        val memeNetworkResponse = MemeNetworkResponse(
+            Data(
+                listOf(
+                    networkMeme
+                )
+            ), true
+        )
+        val response = Response.success(memeNetworkResponse)
+        doReturn(response).whenever(memeReviewApiService).getMemes()
 
-            defaultMemeRepository.refreshMemes()
+        val resultWrapper = defaultMemeRepository.refreshMemes()
+        assertTrue(resultWrapper is ResultWrapper.NetworkSuccess)
 
-            verify(memeReviewApiService).getMemes()
-            verifyNoMoreInteractions()
-        }
+        verify(memeReviewApiService).getMemes()
     }
 
-    private fun verifyNoMoreInteractions() {
-        verifyNoInteractions(
-            memeDao,
-            memeReviewApiService,
-        )
+    @Test
+    fun `cache data`() = runTest {
+        defaultMemeRepository.cacheData(listOf())
+        verify(memeDao).insertAll(anyVararg())
+    }
+
+    @Test
+    fun `get memes from cache`() = runTest {
+        doReturn(listOf<DatabaseMeme>()).whenever(memeDao).getMemes()
+
+        defaultMemeRepository.getMemes()
+        verify(memeDao).getMemes()
     }
 }
