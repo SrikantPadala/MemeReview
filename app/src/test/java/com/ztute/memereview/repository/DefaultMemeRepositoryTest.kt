@@ -2,6 +2,7 @@ package com.ztute.memereview.network
 
 import com.ztute.memereview.database.DatabaseMeme
 import com.ztute.memereview.database.MemeDao
+import com.ztute.memereview.domain.repository.DefaultMemeRepository
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

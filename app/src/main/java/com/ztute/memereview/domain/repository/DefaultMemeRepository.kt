@@ -1,8 +1,11 @@
-package com.ztute.memereview.network
+package com.ztute.memereview.domain.repository
 
 import com.ztute.memereview.database.DatabaseMeme
 import com.ztute.memereview.database.MemeDao
-import com.ztute.memereview.domain.repository.MemeRepository
+import com.ztute.memereview.network.MemeNetworkResponse
+import com.ztute.memereview.network.MemeReviewApiService
+import com.ztute.memereview.network.ResultWrapper
+import com.ztute.memereview.network.safeApiCall
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
