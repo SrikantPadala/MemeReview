@@ -96,7 +96,7 @@ dependencies {
 
     implementation "com.squareup.okhttp3:logging-interceptor:$version_okhttpLogging"
 
-    implementation "androidx.core:core-splashscreen:1.0.0-beta01"
+    implementation "androidx.core:core-splashscreen:$version_splash"
 
     //testing
     testImplementation "junit:junit:$version_junit"

@@ -12,8 +12,8 @@ import com.ztute.memereview.common.BASE_URL
 import com.ztute.memereview.common.DATABASE_NAME
 import com.ztute.memereview.database.MemeDao
 import com.ztute.memereview.database.MemeDatabase
+import com.ztute.memereview.domain.repository.DefaultMemeRepository
 import com.ztute.memereview.domain.repository.MemeRepository
-import com.ztute.memereview.network.DefaultMemeRepository
 import com.ztute.memereview.network.MemeReviewApiService
 import dagger.Module
 import dagger.Provides
