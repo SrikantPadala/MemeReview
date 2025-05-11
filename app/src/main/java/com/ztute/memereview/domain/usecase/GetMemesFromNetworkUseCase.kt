@@ -39,11 +39,14 @@ class GetMemesFromNetworkUseCase @Inject constructor(
                             )
                         )
                     }
+
                     is ResultWrapper.GenericError -> emit(
                         ResultWrapper.GenericError(
                             result.code, result.error
                         )
                     )
+
+                    else -> Unit
                 }
             }
         } catch (e: TimeoutCancellationException) {

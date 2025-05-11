@@ -1,10 +1,24 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+    plugins {
+        id("com.android.application") version "8.3.2"
+        id("org.jetbrains.kotlin.android") version "2.1.20"
+//        id("com.google.devtools.ksp") version "2.1.20-1.0.32"
+        id("kotlin-parcelize") version "2.1.20"
+        id("dagger.hilt.android.plugin") version "2.56.2"
+    }
+}
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
-        jcenter() // Warning: this repository is going to shut down soon
     }
 }
+
 rootProject.name = "MemeReview"
 include ':app'

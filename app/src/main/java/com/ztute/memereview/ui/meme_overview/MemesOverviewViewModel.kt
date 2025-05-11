@@ -18,7 +18,13 @@ import com.ztute.memereview.domain.usecase.GetMemesFromNetworkUseCase
 import com.ztute.memereview.network.ResultWrapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import timber.log.Timber
@@ -67,19 +73,22 @@ class MemesOverviewViewModel @Inject constructor(
                 is ResultWrapper.Loading -> {
                     _isLoading.emit(true)
                 }
+
                 is ResultWrapper.NetworkError -> _hasInternet.emit(false)
                 is ResultWrapper.GenericError -> {
                     _isLoading.emit(false)
                     _errorMessage.emit("code: ${result.code}: ${result.error}")
                 }
+
                 is ResultWrapper.NetworkSuccess -> {
                     _isLoading.emit(false)
                     memeRepository.cacheData(result.value.asDatabaseModel())
                     _memes.emit(result.value.sortedBy { it.id })
                 }
+
+                else -> Unit
             }
-        }
-            .launchIn(viewModelScope + dispatchers.main)
+        }.launchIn(viewModelScope + dispatchers.main)
     }
 
     fun loadMemesFromCache() {
@@ -89,9 +98,12 @@ class MemesOverviewViewModel @Inject constructor(
                 is ResultWrapper.DatabaseError -> {
                     _errorMessage.emit("Database error")
                 }
+
                 is ResultWrapper.DatabaseSuccess -> {
                     _memes.emit(result.value.asDomainModel().sortedBy { it.id })
                 }
+
+                else -> Unit
             }
         }.launchIn(viewModelScope + dispatchers.main)
     }

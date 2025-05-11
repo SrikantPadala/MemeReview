@@ -2,7 +2,13 @@ package com.ztute.memereview
 
 import android.app.Application
 import android.os.Build
-import androidx.work.*
+import androidx.work.Configuration
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.sample.daggerworkmanagersample.SampleWorkerFactory
 import com.ztute.memereview.work.RefreshMemesWorker
 import dagger.hilt.android.HiltAndroidApp
@@ -73,9 +79,8 @@ class MemeReviewApplication : Application(), Configuration.Provider {
         WorkManager.getInstance(applicationContext).enqueue(oneTimeRequest)
     }
 
-    override fun getWorkManagerConfiguration(): Configuration {
-        return Configuration.Builder()
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
             .setWorkerFactory(workerFactory)
             .build();
-    }
 }
